@@ -6,9 +6,16 @@ let db = null;
 // Datenbank beim Laden der Seite initialisieren
 async function initDatabase() {
     try {
-        // SQL.js Library laden (SQLite für Browser)
+        // Warten bis SQL.js Library verfügbar ist
+        if (typeof initSqlJs === 'undefined') {
+            console.error('❌ SQL.js Library nicht geladen');
+            // Fallback: Verwende einfache JavaScript-Objekte
+            return initFallbackDatabase();
+        }
+        
+        // SQL.js Library laden
         const SQL = await initSqlJs({
-            locateFile: file => `https://sql.js.org/dist/${file}`
+            locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
         });
         
         // Neue Datenbank erstellen
@@ -21,8 +28,37 @@ async function initDatabase() {
         
     } catch (error) {
         console.error('❌ Datenbank-Fehler:', error);
-        alert('Datenbank konnte nicht geladen werden!');
+        console.log('🔄 Verwende Fallback-System...');
+        return initFallbackDatabase();
     }
+}
+
+// Fallback: Einfache JavaScript-Objekte verwenden
+function initFallbackDatabase() {
+    console.log('🔄 Fallback-Datenbank initialisiert');
+    
+    // Globale Variable für Raum-Daten
+    window.raumeDaten = {
+        '3ETAGE-R-GANG': { id: '3ETAGE-R-GANG', name: '3. Etage - Rechter Gang', beschreibung: 'Hauptgang der 3. Etage', etage: 3, raumtyp: 'Gang' },
+        'R132': { id: 'R132', name: 'Raum 132', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+        'R133': { id: 'R133', name: 'Raum 133', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+        'R134': { id: 'R134', name: 'Raum 134', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+        'R135': { id: 'R135', name: 'Raum 135', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+        'R136': { id: 'R136', name: 'Raum 136', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+        'R137': { id: 'R137', name: 'Raum 137', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+        'TREPPE-3': { id: 'TREPPE-3', name: 'Treppe zur 3. Etage', beschreibung: 'Treppenhaus', etage: 3, raumtyp: 'Treppe' }
+    };
+    
+    window.verbindungenDaten = {
+        '3ETAGE-R-GANG': ['R132', 'R133', 'R134', 'R135', 'R136', 'R137', 'TREPPE-3'],
+        'R132': ['3ETAGE-R-GANG'],
+        'R133': ['3ETAGE-R-GANG'],
+        'R134': ['3ETAGE-R-GANG'],
+        'R135': ['3ETAGE-R-GANG'],
+        'R136': ['3ETAGE-R-GANG'],
+        'R137': ['3ETAGE-R-GANG'],
+        'TREPPE-3': ['3ETAGE-R-GANG']
+    };
 }
 
 // Datenbank-Schema und Daten einrichten
@@ -78,6 +114,19 @@ async function setupDatabase() {
 
 // WICHTIGE FUNKTION: Raum-Info aus Datenbank holen
 async function getRaumInfo(raumId) {
+    // Fallback-System: Wenn keine Datenbank verfügbar
+    if (!db && window.raumeDaten) {
+        const raum = window.raumeDaten[raumId];
+        if (raum) {
+            console.log(`✅ Raum gefunden (Fallback): ${raum.name}`);
+            return raum;
+        } else {
+            console.log(`❌ Raum ${raumId} nicht gefunden (Fallback)`);
+            return null;
+        }
+    }
+    
+    // Normale Datenbank-Abfrage
     if (!db) {
         console.error('Datenbank nicht initialisiert!');
         return null;
@@ -86,8 +135,8 @@ async function getRaumInfo(raumId) {
     try {
         const sql = 'SELECT * FROM raeume WHERE id = ? AND qr_code_aktiv = 1';
         const statement = db.prepare(sql);
-        const result = statement.get([raumId]); // Parameter sicher einfügen
-        statement.free(); // Speicher freigeben
+        const result = statement.get([raumId]);
+        statement.free();
         
         if (result) {
             console.log(`✅ Raum gefunden: ${result.name}`);
@@ -111,12 +160,20 @@ async function getRaumInfo(raumId) {
 
 // Alle verfügbaren Räume laden
 async function getAlleRaeume() {
+    // Fallback-System
+    if (!db && window.raumeDaten) {
+        return Object.values(window.raumeDaten).map(raum => ({
+            id: raum.id,
+            name: raum.name
+        }));
+    }
+    
     if (!db) return [];
     
     try {
         const sql = 'SELECT id, name FROM raeume WHERE qr_code_aktiv = 1 ORDER BY etage, name';
         const statement = db.prepare(sql);
-        const results = statement.all(); // Alle Ergebnisse holen
+        const results = statement.all();
         statement.free();
         
         return results.map(row => ({
@@ -132,6 +189,11 @@ async function getAlleRaeume() {
 
 // Verbindungen eines Raums finden
 async function getRaumVerbindungen(raumId) {
+    // Fallback-System
+    if (!db && window.verbindungenDaten) {
+        return window.verbindungenDaten[raumId] || [];
+    }
+    
     if (!db) return [];
     
     try {
@@ -146,7 +208,7 @@ async function getRaumVerbindungen(raumId) {
         `;
         
         const statement = db.prepare(sql);
-        const results = statement.all([raumId, raumId]); // Bidirektionale Verbindungen
+        const results = statement.all([raumId, raumId]);
         statement.free();
         
         return results.map(row => row.raum_id);
