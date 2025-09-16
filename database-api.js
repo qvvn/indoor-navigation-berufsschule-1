@@ -2,67 +2,49 @@
 
 let db = null;
 
-// Raum-Daten direkt als JavaScript-Objekte
+// database-api.js - Einfache JavaScript-Datenbank
+
+// Raum-Daten
 window.raumeDaten = {
-    '3ETAGE-R-GANG': { id: '3ETAGE-R-GANG', name: '3. Etage - Rechter Gang', beschreibung: 'Hauptgang der 3. Etage', etage: 3, raumtyp: 'Gang' },
     'R132': { id: 'R132', name: 'Raum 132', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
     'R133': { id: 'R133', name: 'Raum 133', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
     'R134': { id: 'R134', name: 'Raum 134', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
     'R135': { id: 'R135', name: 'Raum 135', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
     'R136': { id: 'R136', name: 'Raum 136', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
     'R137': { id: 'R137', name: 'Raum 137', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-    'TREPPE-3': { id: 'TREPPE-3', name: 'Treppe zur 3. Etage', beschreibung: 'Treppenhaus', etage: 3, raumtyp: 'Treppe' }
+    '3ETAGE-R-GANG': { id: '3ETAGE-R-GANG', name: '3. Etage - Gang', beschreibung: 'Hauptgang', etage: 3, raumtyp: 'Gang' }
 };
 
-// Verbindungen zwischen Räumen
 window.verbindungenDaten = {
-    '3ETAGE-R-GANG': ['R132', 'R133', 'R134', 'R135', 'R136', 'R137', 'TREPPE-3'],
-    'R132': ['3ETAGE-R-GANG'],
-    'R133': ['3ETAGE-R-GANG'],
-    'R134': ['3ETAGE-R-GANG'],
-    'R135': ['3ETAGE-R-GANG'],
-    'R136': ['3ETAGE-R-GANG'],
-    'R137': ['3ETAGE-R-GANG'],
-    'TREPPE-3': ['3ETAGE-R-GANG']
+    '3ETAGE-R-GANG': ['R132', 'R133', 'R134', 'R135', 'R136', 'R137'],
+    'R132': ['3ETAGE-R-GANG'], 'R133': ['3ETAGE-R-GANG'], 'R134': ['3ETAGE-R-GANG'],
+    'R135': ['3ETAGE-R-GANG'], 'R136': ['3ETAGE-R-GANG'], 'R137': ['3ETAGE-R-GANG']
 };
 
-// Datenbank initialisieren (einfach, ohne SQL.js)
 async function initDatabase() {
-    console.log('✅ Einfache JavaScript-Datenbank initialisiert');
+    console.log('✅ JavaScript-Datenbank geladen');
 }
 
-// Raum-Info holen
 async function getRaumInfo(raumId) {
-    // Text bereinigen (Leerzeichen entfernen, Großbuchstaben)
-    const cleanId = raumId.trim().toUpperCase();
-    
-    const raum = window.raumeDaten[cleanId];
+    const raum = window.raumeDaten[raumId.trim().toUpperCase()];
     if (raum) {
         console.log(`✅ Raum gefunden: ${raum.name}`);
         return raum;
-    } else {
-        console.log(`❌ Raum ${cleanId} nicht gefunden`);
-        return null;
     }
+    console.log(`❌ Raum ${raumId} nicht gefunden`);
+    return null;
 }
 
-// Alle Räume laden
 async function getAlleRaeume() {
-    return Object.values(window.raumeDaten).map(raum => ({
-        id: raum.id,
-        name: raum.name
-    }));
+    return Object.values(window.raumeDaten).map(r => ({id: r.id, name: r.name}));
 }
 
-// Verbindungen eines Raums finden
 async function getRaumVerbindungen(raumId) {
-    const cleanId = raumId.trim().toUpperCase();
-    return window.verbindungenDaten[cleanId] || [];
+    return window.verbindungenDaten[raumId.trim().toUpperCase()] || [];
 }
 
-// QR-Scan loggen (optional)
 async function logQRScan(raumId) {
-    console.log(`📊 QR-Scan geloggt: ${raumId}`);
+    console.log(`📊 QR-Scan: ${raumId}`);
 }
 
 // Neuen Raum hinzufügen
@@ -313,3 +295,4 @@ function exportDatabase() {
     URL.revokeObjectURL(url);
     console.log('💾 Datenbank exportiert');
 }
+
