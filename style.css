@@ -1,0 +1,232 @@
+/* style.css - Handy-freundliches Design für Indoor Navigation */
+
+/* Basis-Einstellungen für alle Geräte */
+* {
+    box-sizing: border-box; /* Padding und Border sind in der Breite enthalten */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Moderne Schriftarten */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Schöner Farbverlauf */
+    min-height: 100vh; /* Mindestens ganze Bildschirmhöhe */
+    padding: 20px; /* Abstand zu den Rändern */
+    color: #333; /* Dunkle Schriftfarbe */
+}
+
+/* Hauptcontainer - zentriert auf großen Bildschirmen */
+.container {
+    max-width: 500px; /* Maximal 500px breit (gut für Handys) */
+    margin: 0 auto; /* Horizontal zentrieren */
+    background: white; /* Weißer Hintergrund */
+    border-radius: 20px; /* Abgerundete Ecken */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); /* Schatten für Tiefeneffekt */
+    overflow: hidden; /* Inhalte nicht über Rand hinaus */
+}
+
+/* Hauptüberschrift */
+h1 {
+    background: linear-gradient(45deg, #4CAF50, #45a049); /* Grüner Farbverlauf */
+    color: white;
+    text-align: center; /* Zentriert */
+    padding: 25px 20px; /* Oben/unten 25px, links/rechts 20px */
+    margin: 0;
+    font-size: 24px; /* Große Schrift */
+    font-weight: bold;
+}
+
+/* Beschreibungstext unter Überschrift */
+h1 + p {
+    text-align: center;
+    background: #4CAF50; /* Gleiche Farbe wie Überschrift */
+    color: white;
+    padding: 0 20px 20px 20px; /* Nur unten und seitlich Padding */
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Abschnitte der App (Standort, Scanner, etc.) */
+.current-location,
+.scanner-section,
+.destination-section,
+.route-section {
+    padding: 25px; /* Innenabstand */
+    border-bottom: 1px solid #eee; /* Trennlinie zwischen Abschnitten */
+}
+
+/* Letzter Abschnitt ohne Trennlinie */
+.route-section {
+    border-bottom: none;
+}
+
+/* Unterüberschriften (h2) */
+h2 {
+    color: #333; /* Dunkle Farbe */
+    margin-bottom: 15px; /* Abstand nach unten */
+    font-size: 18px;
+    font-weight: 600; /* Etwas fett aber nicht zu dick */
+}
+
+/* Aktueller Standort Anzeige */
+#current-room {
+    font-size: 16px;
+    padding: 15px; /* Innenabstand */
+    background: #f8f9fa; /* Sehr helles Grau */
+    border-radius: 10px; /* Abgerundete Ecken */
+    border-left: 4px solid #4CAF50; /* Grüner Balken links */
+    margin-top: 10px;
+}
+
+/* Alle Buttons - Basis-Styling */
+.scan-button,
+.route-button {
+    width: 100%; /* Volle Breite */
+    padding: 15px; /* Innenabstand - groß genug für Finger */
+    font-size: 16px;
+    font-weight: bold;
+    border: none; /* Kein Standard-Border */
+    border-radius: 12px; /* Abgerundete Ecken */
+    cursor: pointer; /* Zeiger-Cursor beim Hover */
+    transition: all 0.3s ease; /* Sanfte Übergänge bei Hover */
+    margin-top: 15px; /* Abstand nach oben */
+}
+
+/* QR-Scanner Button */
+.scan-button {
+    background: linear-gradient(45deg, #2196F3, #1976D2); /* Blauer Farbverlauf */
+    color: white;
+}
+
+.scan-button:hover {
+    background: linear-gradient(45deg, #1976D2, #1565C0); /* Dunkler beim Hover */
+    transform: translateY(-2px); /* Leicht anheben */
+}
+
+.scan-button:active {
+    transform: translateY(0); /* Zurück beim Klick */
+}
+
+/* Route-Button */
+.route-button {
+    background: linear-gradient(45deg, #4CAF50, #45a049); /* Grüner Farbverlauf */
+    color: white;
+}
+
+.route-button:hover {
+    background: linear-gradient(45deg, #45a049, #3d8b40);
+    transform: translateY(-2px);
+}
+
+.route-button:disabled {
+    background: #ccc; /* Grau wenn deaktiviert */
+    cursor: not-allowed; /* Verbots-Cursor */
+    transform: none; /* Keine Hover-Effekte */
+}
+
+/* Dropdown für Zielauswahl */
+.destination-dropdown {
+    width: 100%; /* Volle Breite */
+    padding: 15px; /* Großer Innenabstand für Finger */
+    font-size: 16px;
+    border: 2px solid #ddd; /* Dünner grauer Border */
+    border-radius: 10px;
+    background: white;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.destination-dropdown:focus {
+    outline: none; /* Standard-Outline entfernen */
+    border-color: #4CAF50; /* Grüner Border bei Fokus */
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Grüner Glüheffekt */
+}
+
+/* Video für QR-Scanner */
+#qr-video {
+    width: 100%; /* Volle Breite */
+    max-height: 300px; /* Maximale Höhe */
+    border-radius: 10px; /* Abgerundete Ecken */
+    margin-top: 15px;
+    object-fit: cover; /* Video richtig skalieren */
+}
+
+/* Route-Anzeige Bereich */
+#route-display {
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 16px;
+    line-height: 1.6; /* Größerer Zeilenabstand für bessere Lesbarkeit */
+    white-space: pre-line; /* Zeilenumbrüche (\n) respektieren */
+}
+
+/* Erfolgreiche Route (grün) */
+.route-success {
+    background: #d4edda; /* Helles Grün */
+    color: #155724; /* Dunkles Grün */
+    border: 1px solid #c3e6cb; /* Grüner Border */
+}
+
+/* Fehler bei Route (rot) */
+.route-error {
+    background: #f8d7da; /* Helles Rot */
+    color: #721c24; /* Dunkles Rot */
+    border: 1px solid #f5c6cb; /* Roter Border */
+}
+
+/* Responsive Design für sehr kleine Bildschirme */
+@media (max-width: 480px) {
+    body {
+        padding: 10px; /* Weniger Padding auf kleinen Screens */
+    }
+    
+    .container {
+        border-radius: 15px; /* Kleinere Border-Radius */
+    }
+    
+    h1 {
+        font-size: 22px; /* Etwas kleinere Schrift */
+        padding: 20px 15px;
+    }
+    
+    .current-location,
+    .scanner-section,
+    .destination-section,
+    .route-section {
+        padding: 20px; /* Weniger Padding */
+    }
+}
+
+/* Für sehr große Bildschirme (Desktop) */
+@media (min-width: 768px) {
+    body {
+        padding: 40px; /* Mehr Padding */
+    }
+    
+    .container {
+        margin-top: 40px; /* Abstand von oben */
+    }
+}
+
+/* Loading-Animation für QR-Scanner */
+.scanning {
+    position: relative;
+}
+
+.scanning::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(76, 175, 80, 0.3) 50%, transparent 70%);
+    animation: scan-line 2s infinite; /* Endlos-Animation */
+}
+
+/* Animation für Scan-Linie */
+@keyframes scan-line {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
