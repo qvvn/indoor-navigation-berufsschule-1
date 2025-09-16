@@ -1,63 +1,86 @@
-// database-api.js - Verbindung zur SQLite Datenbank
+// database-api.js - Einfache Fallback-Lösung ohne SQL.js
 
-// SQLite Datenbank initialisieren (läuft im Browser!)
 let db = null;
 
-// Datenbank beim Laden der Seite initialisieren
+// Raum-Daten direkt als JavaScript-Objekte
+window.raumeDaten = {
+    '3ETAGE-R-GANG': { id: '3ETAGE-R-GANG', name: '3. Etage - Rechter Gang', beschreibung: 'Hauptgang der 3. Etage', etage: 3, raumtyp: 'Gang' },
+    'R132': { id: 'R132', name: 'Raum 132', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+    'R133': { id: 'R133', name: 'Raum 133', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+    'R134': { id: 'R134', name: 'Raum 134', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+    'R135': { id: 'R135', name: 'Raum 135', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+    'R136': { id: 'R136', name: 'Raum 136', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+    'R137': { id: 'R137', name: 'Raum 137', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
+    'TREPPE-3': { id: 'TREPPE-3', name: 'Treppe zur 3. Etage', beschreibung: 'Treppenhaus', etage: 3, raumtyp: 'Treppe' }
+};
+
+// Verbindungen zwischen Räumen
+window.verbindungenDaten = {
+    '3ETAGE-R-GANG': ['R132', 'R133', 'R134', 'R135', 'R136', 'R137', 'TREPPE-3'],
+    'R132': ['3ETAGE-R-GANG'],
+    'R133': ['3ETAGE-R-GANG'],
+    'R134': ['3ETAGE-R-GANG'],
+    'R135': ['3ETAGE-R-GANG'],
+    'R136': ['3ETAGE-R-GANG'],
+    'R137': ['3ETAGE-R-GANG'],
+    'TREPPE-3': ['3ETAGE-R-GANG']
+};
+
+// Datenbank initialisieren (einfach, ohne SQL.js)
 async function initDatabase() {
-    try {
-        // Warten bis SQL.js Library verfügbar ist
-        if (typeof initSqlJs === 'undefined') {
-            console.error('❌ SQL.js Library nicht geladen');
-            // Fallback: Verwende einfache JavaScript-Objekte
-            return initFallbackDatabase();
-        }
-        
-        // SQL.js Library laden
-        const SQL = await initSqlJs({
-            locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
-        });
-        
-        // Neue Datenbank erstellen
-        db = new SQL.Database();
-        
-        console.log('✅ Datenbank initialisiert');
-        
-        // Tabellen und Daten erstellen
-        await setupDatabase();
-        
-    } catch (error) {
-        console.error('❌ Datenbank-Fehler:', error);
-        console.log('🔄 Verwende Fallback-System...');
-        return initFallbackDatabase();
+    console.log('✅ Einfache JavaScript-Datenbank initialisiert');
+}
+
+// Raum-Info holen
+async function getRaumInfo(raumId) {
+    // Text bereinigen (Leerzeichen entfernen, Großbuchstaben)
+    const cleanId = raumId.trim().toUpperCase();
+    
+    const raum = window.raumeDaten[cleanId];
+    if (raum) {
+        console.log(`✅ Raum gefunden: ${raum.name}`);
+        return raum;
+    } else {
+        console.log(`❌ Raum ${cleanId} nicht gefunden`);
+        return null;
     }
 }
 
-// Fallback: Einfache JavaScript-Objekte verwenden
-function initFallbackDatabase() {
-    console.log('🔄 Fallback-Datenbank initialisiert');
-    
-    // Globale Variable für Raum-Daten
-    window.raumeDaten = {
-        '3ETAGE-R-GANG': { id: '3ETAGE-R-GANG', name: '3. Etage - Rechter Gang', beschreibung: 'Hauptgang der 3. Etage', etage: 3, raumtyp: 'Gang' },
-        'R132': { id: 'R132', name: 'Raum 132', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-        'R133': { id: 'R133', name: 'Raum 133', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-        'R134': { id: 'R134', name: 'Raum 134', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-        'R135': { id: 'R135', name: 'Raum 135', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-        'R136': { id: 'R136', name: 'Raum 136', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-        'R137': { id: 'R137', name: 'Raum 137', beschreibung: 'Klassenzimmer', etage: 3, raumtyp: 'Klassenzimmer' },
-        'TREPPE-3': { id: 'TREPPE-3', name: 'Treppe zur 3. Etage', beschreibung: 'Treppenhaus', etage: 3, raumtyp: 'Treppe' }
-    };
-    
-    window.verbindungenDaten = {
-        '3ETAGE-R-GANG': ['R132', 'R133', 'R134', 'R135', 'R136', 'R137', 'TREPPE-3'],
-        'R132': ['3ETAGE-R-GANG'],
-        'R133': ['3ETAGE-R-GANG'],
-        'R134': ['3ETAGE-R-GANG'],
-        'R135': ['3ETAGE-R-GANG'],
-        'R136': ['3ETAGE-R-GANG'],
-        'R137': ['3ETAGE-R-GANG'],
-        'TREPPE-3': ['3ETAGE-R-GANG']
+// Alle Räume laden
+async function getAlleRaeume() {
+    return Object.values(window.raumeDaten).map(raum => ({
+        id: raum.id,
+        name: raum.name
+    }));
+}
+
+// Verbindungen eines Raums finden
+async function getRaumVerbindungen(raumId) {
+    const cleanId = raumId.trim().toUpperCase();
+    return window.verbindungenDaten[cleanId] || [];
+}
+
+// QR-Scan loggen (optional)
+async function logQRScan(raumId) {
+    console.log(`📊 QR-Scan geloggt: ${raumId}`);
+}
+
+// Neuen Raum hinzufügen
+async function addNeuerRaum(id, name, beschreibung, etage, raumtyp) {
+    window.raumeDaten[id] = { id, name, beschreibung, etage, raumtyp };
+    console.log(`✅ Neuer Raum hinzugefügt: ${name}`);
+    return true;
+}
+
+// Statistiken
+async function getGebaeudeStats() {
+    const alleRaeume = Object.values(window.raumeDaten);
+    return {
+        total_raeume: alleRaeume.length,
+        anzahl_etagen: new Set(alleRaeume.map(r => r.etage)).size,
+        klassenzimmer: alleRaeume.filter(r => r.raumtyp === 'Klassenzimmer').length,
+        gaenge: alleRaeume.filter(r => r.raumtyp === 'Gang').length,
+        treppen: alleRaeume.filter(r => r.raumtyp === 'Treppe').length
     };
 }
 
