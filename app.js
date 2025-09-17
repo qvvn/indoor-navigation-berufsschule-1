@@ -244,4 +244,5 @@ async function zeigeGebaeudeStats() {
 // resetApp() - Setzt die App zurück  
 // zeigeAlleRaeume() - Zeigt alle Räume in der Datenbank
 // zeigeGebaeudeStats() - Zeigt Statistiken über das Gebäude
+
 // exportDatabase() - Lädt Datenbank als Datei herunter
